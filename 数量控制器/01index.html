@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .parBox{
+            margin-top: 100px;
+            margin-left: 500px;
+            height: 140px;
+            width: 300px;
+            border: 1px solid #2db763;
+        }
+        .parBox  p{
+            text-align: center;
+            color: #2db763;
+            font-size: 20px;
+        }
+        .parBox .chilBox{
+            text-align: center;
+        }
+        .parBox .chilBox button{
+            border: none;
+            background: #2b81fe;
+            color: #fff;
+            height: 25px;
+            line-height: 25px;
+        }
+    </style>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <parent></parent>
+    </div>
+    <template id="myf">
+        <div class="parBox">
+            <!-- 展示子组件传递来的数据 -->
+           <p> {{showcont}}</p>
+          <child @change="fn"></child>
+        </div>
+    </template>
+    <template id="mys">
+        <div class="chilBox">
+            <!-- 子组件主动抛出事件 -->
+            <button @click="add">增加1</button> <button @click="min">减小1</button>
+        </div>
+    </template>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data: {
+
+            },
+            components: {
+                'parent': {
+                    template: '#myf',
+                    data() {
+                    return {
+                       showcont:"0"
+                    }
+                },
+                methods:{
+                    fn(val){
+                        // 接受子组件传来的数据
+                        this.showcont=val;
+                    }
+                },
+                components:{
+                    'child':{
+                        template:"#mys",
+                        data() {
+                            return {
+                                cont:0
+                            }
+                        },
+                        methods: {
+                            add(){
+                                this.cont++;
+                                // 通过$emit()抛出事件
+                                this.$emit('change',this.cont)
+                            },
+                            min(){
+                                this.cont--;
+                                if (this.cont<0) {
+                                    this.cont=0
+                                }
+                                this.$emit('change',this.cont)
+                            }
+                        },
+
+                    }
+                }
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>
